@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from app.db.database import Base
 
@@ -19,10 +20,20 @@ class User(Base):
 
     is_verified = Column(Boolean, default=False)
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
 
     updated_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now()
+    )
+
+    # One user can have many projects
+    projects = relationship(
+        "Project",
+        back_populates="owner",
+        cascade="all, delete-orphan"
     )
